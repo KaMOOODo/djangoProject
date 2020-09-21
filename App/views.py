@@ -12,3 +12,14 @@ def Item_list(request):
     for x in result:
          response = x.name+ ' ' +response
     return HttpResponse(response)
+
+def main_page(request):
+    context = {
+        'header' : 'Меню',
+        'menu' : [
+            'Каталог',
+            'О нас',
+            'admin'
+        ]
+    }
+    return render(request, 'index.html', context)
