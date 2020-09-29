@@ -1,0 +1,30 @@
+{% extends 'common.html' %}
+
+{% block Title %}Sign In{% endblock %}
+{% block content %}
+
+
+
+<div class="container">
+{#  <div class="row justify-content-center">#}
+  <div class="row justify-content-center" style="padding: 200px">
+      <div class="col-6">
+          <form class="form-signin text-center" method="post" action="log_in">
+              <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+              <label for="inputText" class="sr-only">Username</label>
+              <input type="text" name="username" class="form-control" placeholder="Username" required autofocus>
+              <label for="inputPassword" class="sr-only">Password</label>
+              <input type="password" name="password" class="form-control" placeholder="Password" required>
+                  <div id="register-link" class="text-md-left">
+                    <a href="signup" class="text-info">Register here</a>
+                  </div>
+              <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+          </form>
+      </div>
+  </div>
+</div>
+
+
+{% endblock %}
+
+
