@@ -1,5 +1,6 @@
 from django.shortcuts import render, HttpResponse
 from django.contrib.auth import  authenticate, login, logout
+from django.contrib.auth.models import  User
 from django.http import HttpResponseRedirect
 
 from App.models import Items
@@ -32,7 +33,8 @@ def log_in(request):
         password=request.POST['password']
     )
     if user is None:
-        return render('error.html', {})
+        return HttpResponse('Неверный логин или пароль')
+        # return render('error.html', {})
     else:
         login(request, user)
         return HttpResponseRedirect('/')
@@ -52,3 +54,13 @@ def signin(request):
 def signup(request):
     return render(request, 'sign_up.html')
 
+def sign_up(request):
+    user = User.objects.create_user(
+        request.POST['login'],
+        password=request.POST['password'],
+        first_name='Jhon',
+        last_name='Smith',
+        email='simple@mail.com'
+    )
+    user.save()
+    return HttpResponse('Ok!')
