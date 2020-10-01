@@ -58,9 +58,9 @@ def sign_up(request):
     user = User.objects.create_user(
         request.POST['login'],
         password=request.POST['password'],
-        first_name='Jhon',
-        last_name='Smith',
-        email='simple@mail.com'
+        email=request.POST['email'],
+        first_name=request.POST['first_name'],
+        last_name=request.POST['last_name']
     )
     user.save()
     return HttpResponse('Ok!')
