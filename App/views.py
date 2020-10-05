@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponse
 from django.contrib.auth import  authenticate, login, logout
 from django.contrib.auth.models import  User
 from django.http import HttpResponseRedirect
+import re
 
 from App.models import Items
 
@@ -54,13 +55,19 @@ def signin(request):
 def signup(request):
     return render(request, 'sign_up.html')
 
+
 def sign_up(request):
-    user = User.objects.create_user(
-        request.POST['login'],
-        password=request.POST['password'],
-        email=request.POST['email'],
-        first_name=request.POST['first_name'],
-        last_name=request.POST['last_name']
-    )
+    username = request.POST['login']
+    password = request.POST['password']
+    email = request.POST['email']
+    if (re.match('^\w+$',username) != None) and (re.match('^\w+$', password)  != None) and (re.match('^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$', email)  != None):
+        user = User.objects.create_user(
+            request.POST['login'],
+            password=request.POST['password'],
+            email=request.POST['email'],
+            first_name=request.POST['first_name'],
+            last_name=request.POST['last_name']
+        )
+    else: return HttpResponse('Неверный логин, пароль или эмейл')
     user.save()
     return HttpResponse('Ok!')
