@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponse
 from django.contrib.auth import  authenticate, login, logout
 from django.contrib.auth.models import  User
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 import re
 
 from App.models import Items
@@ -71,3 +71,11 @@ def sign_up(request):
     else: return HttpResponse('Неверный логин, пароль или эмейл')
     user.save()
     return HttpResponse('Ok!')
+
+
+def validate_login(request):
+    username = request.POST['login']
+    data = {
+        'Yes': User.objects.filter(username=username).exists()
+    }
+    return JsonResponse(data)

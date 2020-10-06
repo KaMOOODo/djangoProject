@@ -93,6 +93,14 @@ $(document).ready(function () {
 })
 
 
-$( document ).ready(function() {
-  $( "#login" ).focus();
-});
+	$(document).ready(function() {
+        $("#name").blur(function () {
+            $.post(
+                'v_l',
+                {'login': $(this).val()},
+                function (response){
+                    alert('Sorry, user with this login exists')
+                }
+            )
+        });
+    })
