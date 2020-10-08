@@ -75,7 +75,14 @@ def sign_up(request):
 
 def validate_login(request):
     username = request.POST['login']
-    data = {
-        'Yes': User.objects.filter(username=username).exists()
-    }
+    # email = request.POST['email']
+    if username is not None:
+        data = {
+            'message': User.objects.filter(username=username).exists()
+        }
+    # elif email is not None:
+    #     data = {
+    #         'email': User.objects.filter(email=email).exists()
+    #     }
+    print(data)
     return JsonResponse(data)

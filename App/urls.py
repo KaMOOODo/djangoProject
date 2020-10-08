@@ -11,5 +11,5 @@ urlpatterns = [
     path('log_out', log_out),
     path('sign_up', signup),
     path('reg', sign_up),
-    path('v_l', validate_login)
+    path('validate_login', validate_login)
 ]
