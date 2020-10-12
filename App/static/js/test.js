@@ -25,8 +25,8 @@ $(document).ready(function () {
 
     $("#email").blur(function () {
         $.post(
-            'validate_login',
-            {'email': document.getElementById('email')},
+            'validate_email',
+            {'email':$(this).val()},
             function (response){
                 if (response.email === true) {
                     document.getElementById("msg").innerText='Sorry, user with this email exists'

@@ -2,11 +2,36 @@
 
 {% block Title %}Sign Up{% endblock %}
 {% block content %}
-
+<!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">Start Bootstrap</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/">Home
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Services</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
 
 <div class="container">
-{#  <div class="row justify-content-center">#}
   <div class="row justify-content-center" style="padding: 200px">
       <div class="col-6">
           <form class="form-signin text-center" method="post" action="reg" autocomplete="off">
@@ -15,12 +40,12 @@
               <input type="text" name="login" class="form-control" id="name"  placeholder="Username" required autofocus>
               <label for="inputPassword" class="sr-only">Password</label>
               <input type="password" name="password" class="form-control" placeholder="Password" required>
+              <label for="inputEmail" class="sr-only">Email</label>
+              <input type="email" name="email" class="form-control" id="email" placeholder="Email" required>
               <label for="inputFirstName" class="sr-only">First name</label>
               <input type="text" name="first_name" class="form-control" placeholder="First name" required>
               <label for="inputLastName" class="sr-only">Last name</label>
               <input type="text" name="last_name" class="form-control" placeholder="Last name" required>
-              <label for="inputEmail" class="sr-only">Email</label>
-              <input type="email" name="email" class="form-control" id="email" placeholder="Email" required>
               <button class="btn btn-lg btn-primary btn-block" id="RegButton" type="submit">Sign Up</button>
           </form>
       </div>
