@@ -68,30 +68,32 @@ def sign_up(request):
             first_name=request.POST['first_name'],
             last_name=request.POST['last_name']
         )
-    else: return HttpResponse('Неверный логин, пароль или эмейл')
-    user.save()
-    return HttpResponse('Ok!')
+        user.save()
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+        return HttpResponseRedirect('/')
+    else:
+        return HttpResponse('Неверный логин, пароль или эмейл')
+
+    # user_login = authenticate(username = user[0], passwrod = user[1])
+
+    # return HttpResponse('Ok!')
 
 
 def validate_login(request):
     username = request.POST['login']
-    print(username)
     if username is not None:
         data = {
             'message': User.objects.filter(username=username).exists()
         }
-    print(data)
     return JsonResponse(data)
 
 
 
 def validate_email(request):
     email = request.POST['email']
-    print(email)
     if email is not None:
         data = {
             'email': User.objects.filter(email=email).exists()
         }
-    print(data)
     return JsonResponse(data)
 
