@@ -3,6 +3,9 @@ from django.contrib.auth import  authenticate, login, logout
 from django.contrib.auth.models import  User
 from django.http import HttpResponseRedirect, JsonResponse
 import re
+import requests
+import json
+
 
 from App.models import Items
 
@@ -96,4 +99,20 @@ def validate_email(request):
             'email': User.objects.filter(email=email).exists()
         }
     return JsonResponse(data)
+
+
+def curent_currencies(requset):
+#зарендерить выпадающим меню
+    course = requests.get('https://www.nbrb.by/api/exrates/rates/dynamics/145?startdate=2020-10-13&enddate=2020-10-20')
+    data = json.loads(course.text)
+    sum_course = 0
+    for cur_day in data:
+        sum_course += cur_day['Cur_OfficialRate']
+    return HttpResponse('Курс доллара: ' + str(round((sum_course/7),2)))
+    # context = {
+    #         'currencies_name' : data['Cur_Name'],
+    #         'course' : data['Cur_OfficialRate']
+    #     }
+    # return render(requests, 'index.html', context)
+
 
