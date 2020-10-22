@@ -13,5 +13,6 @@ urlpatterns = [
     path('reg', sign_up),
     path('validate_login', validate_login),
     path('validate_email', validate_email),
-    path('curent_currencies',curent_currencies)
+    path('curent_currencies',curent_currencies),
+    path('change_language_eng', change_language_eng),
 ]

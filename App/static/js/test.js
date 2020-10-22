@@ -43,6 +43,14 @@ $(document).ready(function () {
 
     })
 
+    $('#eng').click(function (e) {
+        $.post(
+            'change_language_eng',
+            {'lang': 'en'},
+            function (response){}
+        )
+    })
+
 })
 
 

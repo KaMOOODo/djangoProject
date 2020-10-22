@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 import re
 import requests
 import json
+from django.utils.translation import ugettext as trans, activate
 
 
 from App.models import Items
@@ -115,4 +116,8 @@ def curent_currencies(requset):
     #     }
     # return render(requests, 'index.html', context)
 
-
+def change_language_eng(request):
+    print(request.POST['lang'])
+    activate('en')
+    print('now eng language')
+    return HttpResponseRedirect('/')
