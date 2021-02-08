@@ -1,3 +1,6 @@
+import json
+
+from django.contrib.sites import requests
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -106,3 +109,12 @@ def add_comment(request):
             form.save()
             return redirect('/')
     return redirect('/')
+
+
+def curent_currencies(requset):
+    course = requests.get('https://www.nbrb.by/api/exrates/rates/dynamics/145?startdate=2020-10-13&enddate=2020-10-20')
+    data = json.loads(course.text)
+    sum_course = 0
+    for cur_day in data:
+        sum_course += cur_day['Cur_OfficialRate']
+    return HttpResponse('Курс доллара: ' + str(round((sum_course/7),2)))

@@ -14,4 +14,5 @@ urlpatterns = [
     path('validate_email', validate_email),
     path('validate_comment', validate_comment),
     path('add_comment', add_comment),
+    path('curent_currencies',curent_currencies),
 ]
