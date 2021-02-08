@@ -1,0 +1,25 @@
+{% block comments %}
+    <div class="card card-outline-secondary my-4">
+        <div class="card-header">
+            Отзывы
+        </div>
+        <div class="card-body">
+            {% for comment in comments %}
+                {% if comment.item_id_id is item.id %}
+                    <p>{{ comment.text }}</p>
+                    <small class="text-muted">Posted by {{ comment.user_id }} on {{ comment.date }}</small><hr>
+                {% endif %}
+            {% endfor %}
+            {% if user.is_authenticated %}
+                <form method="post" action="add_comment">
+                    {% csrf_token %}
+                    <input type="hidden" name="ItemID" value="{{ item.id }}">
+                    <input type="text" placeholder="Напиши мнение" class="form-control" name="TextComment" id="TextComment"><br>
+                    <button type="submit" class="btn btn-success" id="BTNcomment">Отправить</button>
+                </form>
+            {% else %}
+                <small class="text-muted">Оставлять комментарии могут зарегистрированные пользователи.</small>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,32 +1,26 @@
-from django.shortcuts import render, HttpResponse
-from django.contrib.auth import  authenticate, login, logout
-from django.contrib.auth.models import  User
+from django.shortcuts import render, HttpResponse, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, JsonResponse
 import re
-
-from App.models import Items
+from App.models import Items, Comments
+from .forms import CommentForm
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def index(request):
     return HttpResponse("Лучший онлайн магазин!")
 
-def Item_list(request):
-    result = Items.objects.all()
-    response = ''
-    for x in result:
-         response = x.name+ ' ' +response
-    return HttpResponse(response)
 
 def main_page(request):
+    items = Items.objects.order_by('-id')
+    comments = Comments.objects.order_by('date')
     context = {
-        'header' : 'Меню',
-        'menu' : [
-            'Каталог',
-            'О нас',
-            'admin'
-        ]
+        'items': items,
+        'comments': comments
     }
     return render(request, 'index.html', context)
+
 
 def log_in(request):
     user = authenticate(
@@ -35,7 +29,6 @@ def log_in(request):
     )
     if user is None:
         return HttpResponse('Неверный логин или пароль')
-        # return render('error.html', {})
     else:
         login(request, user)
         return HttpResponseRedirect('/')
@@ -52,6 +45,7 @@ def log_out(request):
 def signin(request):
     return render(request, 'sign_in.html')
 
+
 def signup(request):
     return render(request, 'sign_up.html')
 
@@ -60,7 +54,9 @@ def sign_up(request):
     username = request.POST['login']
     password = request.POST['password']
     email = request.POST['email']
-    if (re.match('^\w+$',username) != None) and (re.match('^\w+$', password)  != None) and (re.match('^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$', email)  != None):
+    if (re.match('^\w+$',username) != None) and \
+        (re.match('^\w+$', password)  != None) and \
+        (re.match('^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$', email)  != None):
         user = User.objects.create_user(
             request.POST['login'],
             password=request.POST['password'],
@@ -70,17 +66,13 @@ def sign_up(request):
         )
         user.save()
         login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-        return HttpResponseRedirect('/')
+        return redirect('/')
     else:
-        return HttpResponse('Неверный логин, пароль или эмейл')
-
-    # user_login = authenticate(username = user[0], passwrod = user[1])
-
-    # return HttpResponse('Ok!')
+        return redirect('/')
 
 
 def validate_login(request):
-    username = request.POST['login']
+    username = request.GET['login']
     if username is not None:
         data = {
             'message': User.objects.filter(username=username).exists()
@@ -88,12 +80,29 @@ def validate_login(request):
     return JsonResponse(data)
 
 
-
 def validate_email(request):
-    email = request.POST['email']
+    email = request.GET['email']
     if email is not None:
         data = {
             'email': User.objects.filter(email=email).exists()
         }
     return JsonResponse(data)
 
+
+def validate_comment(request):
+    comment = request.POST['TextComment']
+    if comment is not None:
+        return not Comments.objects.filter(text=comment).exists()
+
+
+def add_comment(request):
+    if request.method == 'POST' and validate_comment(request):
+        form = CommentForm({
+            'text': request.POST['TextComment'],
+            'item_id': request.POST['ItemID'],
+            'user_id': request.user.id
+        })
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+    return redirect('/')

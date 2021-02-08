@@ -4,8 +4,7 @@ from App.views import *
 
 urlpatterns = [
     path('about', index),
-    path('item_list', Item_list),
-    path('', main_page),
+    path('', main_page, name='home'),
     path('sign_in', signin),
     path('log_in', log_in),
     path('log_out', log_out),
@@ -13,4 +12,6 @@ urlpatterns = [
     path('reg', sign_up),
     path('validate_login', validate_login),
     path('validate_email', validate_email),
+    path('validate_comment', validate_comment),
+    path('add_comment', add_comment),
 ]
