@@ -1,14 +1,26 @@
-{% block comments %}
+{% extends 'common.html' %}
+
+{% block Title %}Tiny room - {{ item.name }}{% endblock %}
+
+{% block content %}
     <div class="card card-outline-secondary my-4">
         <div class="card-header">
             Отзывы
         </div>
         <div class="card-body">
-            {% for comment in comments %}
-                {% if comment.item_id_id is item.id %}
-                    <p>{{ comment.text }}</p>
-                    <small class="text-muted">Posted by {{ comment.user_id }} on {{ comment.date }}</small><hr>
-                {% endif %}
+            <div class="row featurette">
+                  <div class="col-md-6">
+                        <h2 class="featurette-heading">{{ item.name }}<br>
+                            <span class="text-muted">{{ item.cost }} $</span></h2>
+                        <p class="lead">{{ item.text }}</p>
+                  </div>
+                  <div class="col-md-5">
+                        <img src={{ item.link }} class="d-block img-thumbnail" height="500" width="500" alt="image of item {{ item.name }}">
+                  </div>
+            </div>
+            {% for com in comments %}
+                    <p>{{ com.text }}</p>
+                    <small class="text-muted">Posted by {{ com.user_id }} on {{ com.date }}</small><hr>
             {% endfor %}
             {% if user.is_authenticated %}
                 <form method="post" action="add_comment">
@@ -22,4 +34,5 @@
             {% endif %}
         </div>
     </div>
+
 {% endblock %}

@@ -1,19 +1,15 @@
 $(document).ready(function () {
-    $('.classSuper').click(function () {
-        alert('Не тыкай!')
-    })
-
     $("#name").blur(function () {
         $.get(
-            'validate_login',
+            'validate',
             {'login': $(this).val()},
             function (response){
                 if (response.message === true) {
-                    document.getElementById("msg").innerText='Sorry, user with this login exists'
+                    document.getElementById("msg").innerText='Извините, такой аккаунт существует'
                     document.getElementById("RegButton").disabled = true
                 }
                 else {
-                    document.getElementById("msg").innerText='Please enter'
+                    document.getElementById("msg").innerText='Заполните форму'
                     document.getElementById("RegButton").disabled = false
                 }
             }
@@ -22,19 +18,20 @@ $(document).ready(function () {
 
     $("#email").blur(function () {
         $.get(
-            'validate_email',
+            'validate',
             {'email':$(this).val()},
             function (response){
                 if (response.email === true) {
-                    document.getElementById("msg").innerText='Sorry, user with this email exists'
+                    document.getElementById("msg").innerText='Извините, аккаунт с таким email существует'
                     document.getElementById("RegButton").disabled = true
                 }
                 else {
-                    document.getElementById("msg").innerText='Please enter'
+                    document.getElementById("msg").innerText='Заполните форму'
                     document.getElementById("RegButton").disabled = false
                 }
             }
         )
     })
+
 
 })

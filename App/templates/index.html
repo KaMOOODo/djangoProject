@@ -2,22 +2,21 @@
 
 {% block Title %}Shop{% endblock %}
 
+
+
 {% block content %}
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-3">
-                <h1 class="my-4">Shop Name</h1>
-                <div class="list-group">
-                    <a href="#" class="list-group-item active">Category 1</a>
-                    <a href="#" class="list-group-item">Category 2</a>
-                    <a href="#" class="list-group-item">Category 3</a>
-                    <button class="classSuper">Нажми меня</button>
-                </div>
-            </div>
-            <div class="col-lg-9">
-                {% include 'items detail.html' %}
+            <div class="container-fluid">
+                <img src="https://i.pinimg.com/originals/b4/fd/79/b4fd79b936f2984029205a9c76a43bc0.jpg"  height="250" width="100%">
             </div>
         </div>
     </div>
+    {% include 'items_detail.html' %}
 {% endblock %}
+
+
+
+
+
 

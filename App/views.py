@@ -1,18 +1,28 @@
 import json
+import re
+import requests
 
-from django.contrib.sites import requests
-from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect, JsonResponse
-import re
+from django.http import JsonResponse
+from django.shortcuts import render, HttpResponse, redirect
+
 from App.models import Items, Comments
 from .forms import CommentForm
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from datetime import date
 
 
-def index(request):
-    return HttpResponse("Лучший онлайн магазин!")
+def about(request):
+    born = date(1995,12,5)
+    today = date.today()
+    age = today.year - born.year - ((today.month, today.day) < (born.month, born.day))
+    context = {
+        'age': age,
+        'image': 'https://instagram.fgme1-1.fna.fbcdn.net/v/t51.2885-15/e35/87531999_244134023289514_3451152764461641296_n.jpg?'
+                 '_nc_ht=instagram.fgme1-1.fna.fbcdn.net&_nc_cat=110&_nc_ohc=g8vUomKNIuQAX9RqjOG&tp=1&'
+                 'oh=428bcf0cdb228d234718b1b9142b03f0&oe=604BF0E5',
+    }
+    return render(request, 'about.html', context)
 
 
 def main_page(request):
@@ -31,18 +41,16 @@ def log_in(request):
         password=request.POST['password']
     )
     if user is None:
-        return HttpResponse('Неверный логин или пароль')
+        return render(request, 'sign_in.html', {'message': 'Неверный логин или пароль'})
     else:
         login(request, user)
-        return HttpResponseRedirect('/')
+        return redirect('home')
 
 
 def log_out(request):
     if request.user.is_authenticated:
         logout(request)
-        return HttpResponseRedirect('/')
-    else:
-        return HttpResponse('is not sign in')
+        return redirect('home')
 
 
 def signin(request):
@@ -57,35 +65,39 @@ def sign_up(request):
     username = request.POST['login']
     password = request.POST['password']
     email = request.POST['email']
-    if (re.match('^\w+$',username) != None) and \
-        (re.match('^\w+$', password)  != None) and \
-        (re.match('^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$', email)  != None):
-        user = User.objects.create_user(
-            request.POST['login'],
-            password=request.POST['password'],
-            email=request.POST['email'],
-            first_name=request.POST['first_name'],
-            last_name=request.POST['last_name']
-        )
-        user.save()
-        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-        return redirect('/')
+    valid_username = re.match('^\w+$', username) is not None
+    valid_password = re.match('^\w+$', password) is not None
+    validate_email = re.match('^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$', email) is not None
+    if valid_username and valid_password and validate_email:
+        try:
+            user = User.objects.create_user(
+                request.POST['login'],
+                password=request.POST['password'],
+                email=request.POST['email'],
+                first_name=request.POST['first_name'],
+                last_name=request.POST['last_name']
+            )
+        except Exception as IntegrityError:
+            return render(request, 'sign_up.html',
+                          {'message': 'Пользователь с таким именем аккаунта или email уже существует'})
+        if user is not None:
+            user.save()
+            user = authenticate(request, username=username, password=password)
+            login(request, user)
+            return redirect('home')
     else:
-        return redirect('/')
+        return render(request, 'sign_up.html',
+                      {'message': 'Пожалуйста, используйте следующий набор символов a-z, A-Z, 0-9, _'})
 
 
-def validate_login(request):
-    username = request.GET['login']
+def validate(request):
+    username = request.GET.get('login')
     if username is not None:
         data = {
             'message': User.objects.filter(username=username).exists()
         }
-    return JsonResponse(data)
-
-
-def validate_email(request):
-    email = request.GET['email']
-    if email is not None:
+    else:
+        email = request.GET['email']
         data = {
             'email': User.objects.filter(email=email).exists()
         }
@@ -98,7 +110,7 @@ def validate_comment(request):
         return not Comments.objects.filter(text=comment).exists()
 
 
-def add_comment(request):
+def add_comment(request, pk):
     if request.method == 'POST' and validate_comment(request):
         form = CommentForm({
             'text': request.POST['TextComment'],
@@ -107,14 +119,27 @@ def add_comment(request):
         })
         if form.is_valid():
             form.save()
-            return redirect('/')
-    return redirect('/')
+            return item_detail(request, pk)
+    return item_detail(request, pk)
+
+
+def item_detail(request, pk):
+    item = Items.objects.get(pk=pk)
+    comments = Comments.objects.filter(item_id=pk)
+    context = {
+        'item': item,
+        'comments': comments
+    }
+    return render(request, 'comments.html', context)
 
 
 def curent_currencies(requset):
-    course = requests.get('https://www.nbrb.by/api/exrates/rates/dynamics/145?startdate=2020-10-13&enddate=2020-10-20')
+    course = requests.get('https://www.nbrb.by/api/exrates/rates/dynamics/145?startdate=2021-02-07&enddate=2021-02-13')
     data = json.loads(course.text)
     sum_course = 0
     for cur_day in data:
         sum_course += cur_day['Cur_OfficialRate']
-    return HttpResponse('Курс доллара: ' + str(round((sum_course/7),2)))
+    return HttpResponse('Курс доллара: ' + str(round((sum_course / 7), 2)))
+
+
+

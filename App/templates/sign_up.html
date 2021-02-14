@@ -7,18 +7,18 @@
       <div class="col-6">
           <form class="form-signin text-center" method="post" action="reg" autocomplete="off">
               {% csrf_token %}
-              <h1 class="h3 mb-3 font-weight-normal"id="msg">Please enter</h1>
+              <h1 class="h3 mb-3 font-weight-normal"id="msg">Заполните форму<br>{{ message }}</h1>
               <label for="inputText" class="sr-only">Username</label>
-              <input type="text" name="login" class="form-control" id="name"  placeholder="Username" required autofocus>
+              <input type="text" name="login" class="form-control" id="name"  placeholder="Имя аккаунта" required autofocus>
               <label for="inputPassword" class="sr-only">Password</label>
-              <input type="password" name="password" class="form-control" placeholder="Password" required>
+              <input type="password" name="password" class="form-control" placeholder="Пароль" required>
               <label for="inputEmail" class="sr-only">Email</label>
               <input type="email" name="email" class="form-control" id="email" placeholder="Email" required>
               <label for="inputFirstName" class="sr-only">First name</label>
-              <input type="text" name="first_name" class="form-control" placeholder="First name" required>
+              <input type="text" name="first_name" class="form-control" placeholder="Имя" required>
               <label for="inputLastName" class="sr-only">Last name</label>
-              <input type="text" name="last_name" class="form-control" placeholder="Last name" required>
-              <button class="btn btn-lg btn-primary btn-block" id="RegButton" type="submit">Sign Up</button>
+              <input type="text" name="last_name" class="form-control" placeholder="Фамилия" required>
+              <button class="btn btn-lg btn-primary btn-block" id="RegButton" type="submit">Зарегистрироваться</button>
           </form>
       </div>
   </div>
