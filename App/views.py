@@ -4,6 +4,7 @@ import requests
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse, redirect
 
@@ -13,7 +14,7 @@ from datetime import date
 
 
 def about(request):
-    born = date(1995,12,5)
+    born = date(1995, 12, 5)
     today = date.today()
     age = today.year - born.year - ((today.month, today.day) < (born.month, born.day))
     context = {
@@ -26,11 +27,29 @@ def about(request):
 
 
 def main_page(request):
-    items = Items.objects.order_by('-id')
-    comments = Comments.objects.order_by('date')
+    paginator = Paginator(Items.objects.order_by('-id'), 4)
+    try:
+        page = int(request.GET.get('page', '1'))
+    except:
+        page = 1
+    try:
+        item_list = paginator.page(page)
+    except(EmptyPage, InvalidPage):
+        item_list = paginator.page(1)
+
+    # Get the index of the current page
+    index = item_list.number - 1  # edited to something easier without index
+    # This value is maximum index of your pages, so the last page - 1
+    max_index = len(paginator.page_range)
+    # You want a range of 7, so lets calculate where to slice the list
+    start_index = index - 3 if index >= 3 else 0
+    end_index = index + 3 if index <= max_index - 3 else max_index
+    # Get our new page range. In the latest versions of Django page_range returns
+    # an iterator. Thus pass it to list, to make our slice possible again.
+    page_range = list(paginator.page_range)[start_index:end_index]
     context = {
-        'items': items,
-        'comments': comments
+        'item_list': item_list,
+        'page_range': page_range,
     }
     return render(request, 'index.html', context)
 
@@ -140,6 +159,3 @@ def curent_currencies(requset):
     for cur_day in data:
         sum_course += cur_day['Cur_OfficialRate']
     return HttpResponse('Курс доллара: ' + str(round((sum_course / 7), 2)))
-
-
-

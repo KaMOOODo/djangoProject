@@ -3,35 +3,37 @@
 {% block Title %}Tiny room - {{ item.name }}{% endblock %}
 
 {% block content %}
-    <div class="card card-outline-secondary my-4">
-        <div class="card-header">
-            Отзывы
-        </div>
-        <div class="card-body">
-            <div class="row featurette">
-                  <div class="col-md-6">
-                        <h2 class="featurette-heading">{{ item.name }}<br>
-                            <span class="text-muted">{{ item.cost }} $</span></h2>
-                        <p class="lead">{{ item.text }}</p>
-                  </div>
-                  <div class="col-md-5">
-                        <img src={{ item.link }} class="d-block img-thumbnail" height="500" width="500" alt="image of item {{ item.name }}">
-                  </div>
+
+    <div class="container gx-5">
+        <div class="row-cols-1">
+            <div class="card-body">
+                <div class="row featurette">
+                      <div class="col-md-6">
+                            <h2 class="featurette-heading">{{ item.name }}<br>
+                                <span class="text-muted">{{ item.cost }} $</span></h2>
+                            <p class="lead">{{ item.text }}</p>
+                      </div>
+                      <div class="col-md-5">
+                            <img src={{ item.link }} class="d-block img-thumbnail" height="500" width="500" alt="image of item {{ item.name }}">
+                      </div>
+                </div>
+                <hr>
+                {% for com in comments %}
+                    {{ com.user_id }}<br><p>{{ com.text }}  <small class="text-muted">{{ com.date }}</small></p>
+                    <hr>
+                {% endfor %}
+
+                {% if user.is_authenticated %}
+                    <form method="post" action="add_comment">
+                        {% csrf_token %}
+                        <input type="hidden" name="ItemID" value="{{ item.id }}">
+                        <input type="text" placeholder="Напиши мнение" class="form-control" name="TextComment" id="TextComment"><br>
+                        <button type="submit" class="btn btn-success" id="BTNcomment">Отправить</button>
+                    </form>
+                {% else %}
+                    <small class="text-muted">Оставлять комментарии могут зарегистрированные пользователи.</small>
+                {% endif %}
             </div>
-            {% for com in comments %}
-                    <p>{{ com.text }}</p>
-                    <small class="text-muted">Posted by {{ com.user_id }} on {{ com.date }}</small><hr>
-            {% endfor %}
-            {% if user.is_authenticated %}
-                <form method="post" action="add_comment">
-                    {% csrf_token %}
-                    <input type="hidden" name="ItemID" value="{{ item.id }}">
-                    <input type="text" placeholder="Напиши мнение" class="form-control" name="TextComment" id="TextComment"><br>
-                    <button type="submit" class="btn btn-success" id="BTNcomment">Отправить</button>
-                </form>
-            {% else %}
-                <small class="text-muted">Оставлять комментарии могут зарегистрированные пользователи.</small>
-            {% endif %}
         </div>
     </div>
 
