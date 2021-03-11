@@ -1,6 +1,9 @@
 import json
 import re
 import requests
+import redis
+from django.conf import settings
+from django.contrib import messages
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -8,8 +11,8 @@ from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse, redirect
 
-from App.models import Items, Comments
-from .forms import CommentForm
+from App.models import Items, Comments, Customer, Order
+from .forms import CommentForm, OrderForm
 from datetime import date
 
 
@@ -159,3 +162,41 @@ def curent_currencies(requset):
     for cur_day in data:
         sum_course += cur_day['Cur_OfficialRate']
     return HttpResponse('Курс доллара: ' + str(round((sum_course / 7), 2)))
+
+
+def checkout(request, item_id):
+    form = OrderForm(request.POST or None)
+    context = {
+        'form': form,
+        'item_id': item_id
+    }
+    return render(request, 'checkout.html', context)
+
+
+def checkout_submit(request, item_id):
+    form = OrderForm(request.POST or None)
+    if request.user.is_authenticated:
+        customer = Customer.objects.filter(user=request.user).first()
+        if not customer:
+            customer = Customer.objects.create(
+                user=request.user
+            )
+    item = Items.objects.get(pk=item_id)
+    if form.is_valid():
+        new_order = form.save(commit=False)
+        new_order.customer = customer
+        new_order.first_name = form.cleaned_data['first_name']
+        new_order.last_name = form.cleaned_data['last_name']
+        new_order.address = form.cleaned_data['address']
+        new_order.phone = form.cleaned_data['phone']
+        new_order.buying_type = form.cleaned_data['buying_type']
+        new_order.comment = form.cleaned_data['comment']
+        new_order.order_date = form.cleaned_data['order_date']
+        new_order.item = item
+        new_order.save()
+        customer.orders.add(new_order)
+        messages.add_message(request, messages.INFO, 'Спасибо за заказ, я вам перезвоню!')
+        return item_detail(request, item_id)
+    else:
+        messages.add_message(request, messages.INFO, 'Не получилось оформить заказ, повторите')
+        return item_detail(request, item_id)

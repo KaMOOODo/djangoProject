@@ -4,3 +4,5 @@ from App.models import *
 
 admin.site.register(Items)
 admin.site.register(Comments)
+admin.site.register(Customer)
+admin.site.register(Order)

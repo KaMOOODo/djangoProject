@@ -3,8 +3,17 @@
 {% block Title %}Tiny room - {{ item.name }}{% endblock %}
 
 {% block content %}
-
     <div class="container gx-5">
+        {% if messages %}
+        {% for message in messages %}
+              <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                    <strong>{{ message }}</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+              </div>
+        {% endfor %}
+    {% endif %}
         <div class="row-cols-1">
             <div class="card-body">
                 <div class="row featurette">
@@ -12,6 +21,7 @@
                             <h2 class="featurette-heading">{{ item.name }}<br>
                                 <span class="text-muted">{{ item.cost }} $</span></h2>
                             <p class="lead">{{ item.text }}</p>
+                            <a class="btn btn-primary" href="/item/{{ item.id }}/checkout">Заказать</a>
                       </div>
                       <div class="col-md-5">
                             <img src={{ item.link }} class="d-block img-thumbnail" height="500" width="500" alt="image of item {{ item.name }}">

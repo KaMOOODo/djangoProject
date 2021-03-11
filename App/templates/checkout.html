@@ -1,0 +1,17 @@
+{% extends 'common.html' %}
+
+{%  load crispy_forms_tags %}
+
+{% block content %}
+<div class="container p-5">
+  <div class="row justify-content-center ">
+      <div class="col-6">
+        <form action="/item/{{ item_id }}/checkout_submit" method="POST">
+            {% csrf_token %}
+            {{ form|crispy}}
+            <input type="submit" class="btn btn-success btn-block" value="Оформить заказ">
+        </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-with open(BASE_DIR/'etc/secret_key.txt') as f:
+with open(BASE_DIR/'etc/secret_key') as f:
     SECRET_KEY = f.read().strip()
 
 
@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'App.apps.AppConfig',
     'allauth',
-    'allauth.account'
+    'allauth.account',
+    'crispy_forms'
 ]
 
 MIDDLEWARE = [
@@ -88,6 +89,12 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+#Redis settings
+
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 0
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
@@ -140,5 +147,6 @@ LOGIN_REDIRECT_URL ='/'
 
 STATIC_URL = '/static/'
 
-
 SITE_ID = 1
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

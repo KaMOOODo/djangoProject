@@ -26,7 +26,7 @@
     {% if item_list %}
         {% for item in item_list %}
             {% if forloop.counter|divisibleby:"2" %}
-                <div class="row featurette">
+                <div class="row featurette fadeInRightBig">
                       <div class="col-md-6 order-2">
                             <h2 class="featurette-heading"><a href="item/{{ item.id }}/">{{ item.name }}</a><br>
                                 <span class="text-muted">{{ item.cost }} $</span></h2>
@@ -38,7 +38,7 @@
                 </div>
                 <hr class="featurette-divider">
             {% else %}
-                <div class="row featurette">
+                <div class="row featurette fadeInLeftBig">
                       <div class="col-md-6">
                             <h2 class="featurette-heading"><a href="item/{{ item.id }}/">{{ item.name }}</a><br>
                                 <span class="text-muted">{{ item.cost }} $</span></h2>
